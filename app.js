@@ -54,6 +54,24 @@ class UI {
     }
   }
 
+  //show alert messages
+  static showAlert (message, className) {
+    //creating div for the alert message box
+    const div = document.createElement('div');
+    div.className = `alert alert-${className}`;
+    //adding text to the div element
+    div.appendChild(document.createTextNode(message));
+
+    //for adding div to the container
+    const container = document.querySelector('.container');
+    const form = document.querySelector('#book-form');
+    //adding div before the form element
+    container.insertBefore(div, form);
+
+    //vanishing the alert message 
+    setTimeout(() => document.querySelector('.alert').remove(), 3000);
+  }
+
   //to clear the text field
   static clearField () {
     document.getElementById('title').value = '';
@@ -72,17 +90,29 @@ document.addEventListener('DOMContentLoaded', UI.displayBook);
 document.querySelector('#book-form').addEventListener('submit', (e) => {
   e.preventDefault();
 
+  //getting value from the text fields
   const title = document.getElementById('title').value;
   const author = document.getElementById('author').value;
   const isbn = document.getElementById('isbn').value;
 
-  const book = new Book (title, author, isbn);
+  //validation
+  if (title === '' || author === '' || isbn === '') {
+    UI.showAlert('Please enter values in all the text fields!', 'danger');
+  } else {
+    const book = new Book (title, author, isbn);
 
-  UI.addBookToList(book);
-  UI.clearField();
+    //adding book to the list
+    UI.addBookToList(book);
+    //displaying success message
+    UI.showAlert("The book has been successfully added!", 'success');
+
+    //clearing the textfields
+    UI.clearField();
+  }
 })
 
 //Event: Remove a book
 document.querySelector('#book-list').addEventListener('click', (e) => {
   UI.removeBook(e.target);
+  UI.showAlert("The book has been successfully removed!", "success");
 });
